@@ -4,6 +4,7 @@ import com.luv2code.books.entity.Book;
 import com.luv2code.books.request.BookRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class BookController {
         ));
     }
     //GET  Request to get books By ID
+    @ResponseStatus (HttpStatus.OK)
     @GetMapping()
     public List<Book> getBooks(@RequestParam(required = false) Long id) {
         if (id == null) {
@@ -49,7 +51,7 @@ public class BookController {
                 .filter(b -> b.getId() == id) // long equality
                 .collect(Collectors.toList());
     }
-
+    @ResponseStatus (HttpStatus.OK)
     @GetMapping("/{id}")
     public Book getBookById(@PathVariable  @Min(value = 1) Long id)  {
 
@@ -71,6 +73,8 @@ public class BookController {
                 bookRequest.getRating()
         );
     }
+    // Updating a
+   @ResponseStatus (HttpStatus.CREATED)
    @PostMapping()
     public void createBook(@Valid @RequestBody BookRequest newBook) {
       long id = books.isEmpty()? 1: books.get(books.size() -1).getId() + 1;
@@ -82,6 +86,7 @@ public class BookController {
 
 
     //Creating a UT Request to create a new ITEM http://localhost:8080/swagger-ui/index.html
+    @ResponseStatus (HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void updateBook( @PathVariable @Min(value = 1)long id, @Valid @RequestBody BookRequest bookRequest) {
         for(int i =0; i<books.size(); i++) {
@@ -94,6 +99,7 @@ public class BookController {
     }
 
     //Delete request in spring boot REST
+    @ResponseStatus (HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable @Min(value = 1)long id) {
             books.removeIf(book -> book.getId()==id );

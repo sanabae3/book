@@ -2,6 +2,8 @@ package com.luv2code.books.controller;
 
 import com.luv2code.books.entity.Book;
 import com.luv2code.books.request.BookRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Tag(name = " Boohs Rest API endpoints", description = "Operations related to Books")
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
@@ -41,6 +43,7 @@ public class BookController {
         ));
     }
     //GET  Request to get books By ID
+    @Operation (summary = "Get all books", description = "retrieving all available books ")
     @ResponseStatus (HttpStatus.OK)
     @GetMapping()
     public List<Book> getBooks(@RequestParam(required = false) Long id) {
@@ -51,6 +54,8 @@ public class BookController {
                 .filter(b -> b.getId() == id) // long equality
                 .collect(Collectors.toList());
     }
+
+    @Operation (summary = "Get book a book by ID", description = "retrieving a specific book base on the ID")
     @ResponseStatus (HttpStatus.OK)
     @GetMapping("/{id}")
     public Book getBookById(@PathVariable  @Min(value = 1) Long id)  {
@@ -73,19 +78,9 @@ public class BookController {
                 bookRequest.getRating()
         );
     }
-    // Updating a
-   @ResponseStatus (HttpStatus.CREATED)
-   @PostMapping()
-    public void createBook(@Valid @RequestBody BookRequest newBook) {
-      long id = books.isEmpty()? 1: books.get(books.size() -1).getId() + 1;
-
-      Book book = convertToBook(id, newBook);
-    books.add(book);
-    }
-
-
 
     //Creating a UT Request to create a new ITEM http://localhost:8080/swagger-ui/index.html
+    @Operation (summary = "Updating a book by ID", description = "Updating a specific book by ID")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public void updateBook( @PathVariable @Min(value = 1)long id, @Valid @RequestBody BookRequest bookRequest) {
@@ -97,8 +92,23 @@ public class BookController {
             }
         }
     }
+    // Updating a
+    @Operation (summary = "create a book  a book by ID", description = "Updating a specific book by ID")
+   @ResponseStatus (HttpStatus.CREATED)
+   @PostMapping()
+    public void createBook(@Valid @RequestBody BookRequest newBook) {
+      long id = books.isEmpty()? 1: books.get(books.size() -1).getId() + 1;
+
+      Book book = convertToBook(id, newBook);
+    books.add(book);
+    }
+
+
+
+
 
     //Delete request in spring boot REST
+    @Operation (summary = "Delete a book  a book by ID", description = "Updating a specific book by ID")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteBook(@PathVariable @Min(value = 1)long id) {
@@ -106,7 +116,7 @@ public class BookController {
 
     }
 
-
+/**/
 
 
 }

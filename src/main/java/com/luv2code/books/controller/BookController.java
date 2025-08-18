@@ -3,6 +3,7 @@ package com.luv2code.books.controller;
 import com.luv2code.books.entity.Book;
 import com.luv2code.books.request.BookRequest;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -46,7 +47,7 @@ public class BookController {
     @Operation (summary = "Get all books", description = "retrieving all available books ")
     @ResponseStatus (HttpStatus.OK)
     @GetMapping()
-    public List<Book> getBooks(@RequestParam(required = false) Long id) {
+    public List<Book> getBooks(@Parameter (description = "optional querry parameter")@RequestParam(required = false) Long id) {
         if (id == null) {
             return books;
         }
@@ -58,7 +59,7 @@ public class BookController {
     @Operation (summary = "Get book a book by ID", description = "retrieving a specific book base on the ID")
     @ResponseStatus (HttpStatus.OK)
     @GetMapping("/{id}")
-    public Book getBookById(@PathVariable  @Min(value = 1) Long id)  {
+    public Book getBookById(@Parameter(description = "Id of the book to be retrieved ") @PathVariable  @Min(value = 1) Long id)  {
 
         return books
                 .stream()
@@ -83,7 +84,7 @@ public class BookController {
     @Operation (summary = "Updating a book by ID", description = "Updating a specific book by ID")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
-    public void updateBook( @PathVariable @Min(value = 1)long id, @Valid @RequestBody BookRequest bookRequest) {
+    public void updateBook(@Parameter(description = "Id of the book to be udated  ") @PathVariable @Min(value = 1)long id, @Valid @RequestBody BookRequest bookRequest) {
         for(int i =0; i<books.size(); i++) {
             if(books.get(i).getId() == id) {
                 Book updatedBook = convertToBook( id, bookRequest);
@@ -111,12 +112,11 @@ public class BookController {
     @Operation (summary = "Delete a book  a book by ID", description = "Updating a specific book by ID")
     @ResponseStatus (HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable @Min(value = 1)long id) {
+    public void deleteBook(@Parameter(description = "Id of the book to delete ")@PathVariable @Min(value = 1)long id) {
             books.removeIf(book -> book.getId()==id );
 
     }
-
-/**/
+/* cleaning up Swagger documentation and by adding descriptions for GET PUT and DELETE*/
 
 
 }
